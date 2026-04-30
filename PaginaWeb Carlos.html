@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hambre Cero Jóvenes</title>
+ 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+ 
+<!-- LIBRERÍAS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+ 
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:#05070d;color:#fff}
+ 
+.nav{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 60px;border-bottom:1px solid #1b2035;
+  position:sticky;top:0;
+  background:rgba(5,7,13,0.7);backdrop-filter:blur(12px);
+}
+.nav-links{display:flex;gap:18px;background:#0b0f1f;padding:8px 16px;border-radius:14px}
+.nav-links a{color:#9aa3c0;cursor:pointer}
+.nav-links a:hover{color:white}
+ 
+.btn{
+  background:linear-gradient(90deg,#ff2d8d,#ff4db8);
+  border:none;padding:10px 18px;border-radius:12px;color:white;
+  cursor:pointer;transition:.3s;
+}
+.btn:hover{transform:scale(1.05);box-shadow:0 0 20px #ff2d8d}
+ 
+.hero{padding:90px 80px;display:flex}
+.hero h1{
+  font-size:64px;margin-bottom:20px;
+  background:linear-gradient(90deg,#fff,#ff4db8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero p{color:#9aa3c0}
+ 
+.section{padding:60px 80px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+ 
+.card,.action-card,.social-card{
+  background:rgba(11,15,31,0.7);
+  border:1px solid #1b2035;
+  border-radius:20px;padding:20px;
+  transition:.3s;
+}
+.card:hover,.action-card:hover,.social-card:hover{
+  transform:translateY(-8px);
+}
+ 
+.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.social{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.social a{text-decoration:none;color:white}
+ 
+.counter{text-align:center;font-size:30px;margin-top:20px;color:#ff4db8}
+.cta{margin:60px 80px;padding:30px;border:2px solid #ff2d8d;border-radius:20px;display:flex;justify-content:space-between}
+ 
+/* DASHBOARD */
+canvas{width:100%!important;height:280px!important}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin-top:20px;
+}
+
+.stat{
+  background:#0b0f1f;
+  padding:15px;
+  border-radius:14px;
+  border:1px solid #1b2035;
+  text-align:center;
+}
+
+.stat h4{font-size:22px;color:#ff4db8}
+.stat p{font-size:12px;color:#9aa3c0}
+
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
+  .actions{grid-template-columns:1fr 1fr}
+}
+
+@media(max-width:600px){
+  .stats{grid-template-columns:1fr}
+  .actions{grid-template-columns:1fr}
+}
+</style>
+</head>
+ 
+<body>
+
+<div class="nav">
+  <div>Hambre Cero</div>
+  <div class="nav-links">
+    <a onclick="irA('hero')">Inicio</a>
+    <a onclick="irA('ods')">ODS</a>
+    <a onclick="irA('acciones')">Acción</a>
+  </div>
+  <button class="btn" onclick="actuar()">Actúa ahora</button>
+</div>
+
+<section id="hero" class="hero">
+  <div>
+    <h1 id="titulo">El hambre no es un juego.</h1>
+    <p>En México millones necesitan ayuda. Tú puedes cambiarlo.</p>
+    <button class="btn" onclick="irA('acciones')">Súmate</button>
+  </div>
+</section>
+
+<!-- ODS DASHBOARD -->
+<section id="ods" class="section">
+  <div class="grid">
+
+    <div class="card">
+      <h3>¿Qué son los ODS?</h3>
+      <p>
+        Los Objetivos de Desarrollo Sostenible (ODS) son 17 metas globales creadas por la ONU
+        para erradicar la pobreza, proteger el planeta y asegurar el bienestar de todas las personas.
+      </p>
+      <br>
+      <p>
+        El <strong>ODS 2: Hambre Cero</strong> busca terminar con el hambre, lograr la seguridad alimentaria,
+        mejorar la nutrición y promover una agricultura sostenible para el año 2030.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>ODS 2: Hambre Cero 🌍</h3>
+
+      <p>
+        Actualmente, el hambre sigue siendo un problema global:
+      </p>
+
+      <ul style="margin-top:10px; color:#9aa3c0; line-height:1.6">
+        <li>Más de <strong>735 millones</strong> de personas sufren hambre en el mundo.</li>
+        <li>Cerca de <strong>1 de cada 3 personas</strong> no tiene acceso a una alimentación adecuada.</li>
+        <li>El desperdicio de alimentos contribuye al problema.</li>
+      </ul>
+
+      <br>
+
+      <canvas id="grafica"></canvas>
+      <div style="margin-top:10px; text-align:right;">
+        <button class="btn" onclick="cambiarDatos()">Ver México</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <h4>735M</h4>
+          <p>Personas con hambre</p>
+        </div>
+        <div class="stat">
+          <h4>1/3</h4>
+          <p>Sin acceso a comida adecuada</p>
+        </div>
+        <div class="stat">
+          <h4>+122M</h4>
+          <p>Aumento desde 2019</p>
+        </div>
+      </div>
+
+      <p style="font-size:12px;color:#9aa3c0;margin-top:10px;">
+        Fuente: ONU / FAO
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- REDES -->
+<section id="redes" class="section">
+  <h2>Comparte</h2>
+
+  <div class="social">
+
+    <a href="https://www.tumblr.com/hambrecer0/815329102394507264/dato-r%C3%A1pido?source=share" target="_blank" class="social-card">
+      <div class="img-container">
+        <img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d">
+        <span class="overlay">Ver post →</span>
+      </div>
+      <div>Dato rápido</div>
+    </a>
+
+    <a href="https://www.tumblr.com/hambrecer0/815328998996492288/imag%C3%ADnate-no-saber-si-ma%C3%B1ana-vas-a-comer?source=share" target="_blank" class="social-card">
+      <div class="img-container">
+        <img src="https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38">
+        <span class="overlay">Ver post →</span>
+      </div>
+      <div>Imagínate no saber si mañana vas a comer</div>
+    </a>
+
+    <a href="https://www.tumblr.com/hambrecer0/815328793664307200/el-hambre-no-es-un-problema-lejano?source=share" target="_blank" class="social-card">
+      <div class="img-container">
+        <img src="https://images.unsplash.com/photo-1589927986089-35812388d1f4">
+        <span class="overlay">Ver post →</span>
+      </div>
+      <div>El hambre no es un problema lejano</div>
+    </a>
+
+  </div>
+
+  <!-- SOLO ESTILO PARA ESTA SECCIÓN -->
+  <style>
+    #redes .img-container{
+      position:relative;
+      overflow:hidden;
+      border-radius:12px;
+    }
+
+    #redes .img-container img{
+      width:100%;
+      height:180px;
+      object-fit:cover;
+      transition:transform .4s ease;
+    }
+
+    #redes .overlay{
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:rgba(0,0,0,0.5);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:white;
+      font-size:16px;
+      opacity:0;
+      transition:.3s;
+    }
+
+    #redes .social-card:hover img{
+      transform:scale(1.1);
+    }
+
+    #redes .social-card:hover .overlay{
+      opacity:1;
+    }
+
+    #redes a{
+      text-decoration:none;
+      color:white;
+    }
+  </style>
+
+</section>
+
+<section id="acciones" class="section">
+  <h2>Acciones</h2>
+  <div class="actions">
+    <div class="action-card" onclick="accion('donar',this)">
+      <h3>Donar</h3><button class="btn">Ayudar</button>
+    </div>
+    <div class="action-card" onclick="accion('desperdicio',this)">
+      <h3>Reducir</h3><button class="btn">Acción</button>
+    </div>
+    <div class="action-card" onclick="accion('banco',this)">
+      <h3>Bancos</h3><button class="btn">Apoyar</button>
+    </div>
+    <div class="action-card" onclick="accion('voluntario',this)">
+      <h3>Voluntario</h3><button class="btn">Unirme</button>
+    </div>
+  </div>
+
+  <div id="impacto" class="counter">0</div>
+</section>
+
+<div class="cta">
+  <h2>Haz la diferencia</h2>
+  <button class="btn" onclick="actuar()">Actuar</button>
+</div>
+
+<script>
+let count = 0;
+
+function irA(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+
+function actuar(){
+  alert("¡Gracias por actuar!");
+}
+
+function accion(tipo, el){
+  gsap.fromTo(el,{scale:1},{scale:1.1,duration:0.2,yoyo:true,repeat:1});
+  count += Math.floor(Math.random()*30)+10;
+  impacto.innerText=count;
+}
+
+/* ANIMACIÓN */
+gsap.from("#titulo",{y:-50,opacity:0,duration:1.5});
+
+let modo = "mundo";
+
+const dataMundo = {
+  labels:['África','Asia','América Latina','Otras'],
+  datos:[278,402,56,20]
+};
+
+const dataMexico = {
+  labels:['Leve','Moderada','Severa'],
+  datos:[32,25,9]
+};
+
+const ctx = document.getElementById('grafica');
+
+/* CREAR GRÁFICA COMO VARIABLE */
+const chart = new Chart(ctx,{
+  type:'bar',
+  data:{
+    labels:dataMundo.labels,
+    datasets:[{
+      data:dataMundo.datos,
+      backgroundColor:'#ff4db8',
+      borderRadius:6
+    }]
+  },
+  options:{
+    plugins:{
+      legend:{display:false},
+      title:{
+        display:true,
+        text:'Distribución global del hambre',
+        color:'#fff'
+      }
+    },
+    scales:{
+      x:{ticks:{color:'#9aa3c0'}},
+      y:{
+        ticks:{
+          color:'#9aa3c0',
+          callback:(v)=> modo==="mundo" ? v+'M' : v+'%'
+        }
+      }
+    }
+  }
+});
+
+/* 🔘 BOTÓN FUNCIONAL */
+function cambiarDatos(){
+  const boton = document.querySelector('#ods .btn');
+
+  if(modo === "mundo"){
+    modo = "mexico";
+
+    chart.data.labels = dataMexico.labels;
+    chart.data.datasets[0].data = dataMexico.datos;
+
+    chart.options.plugins.title.text = 'Inseguridad alimentaria en México (%)';
+    boton.innerText = "Ver Mundo";
+
+  } else {
+    modo = "mundo";
+
+    chart.data.labels = dataMundo.labels;
+    chart.data.datasets[0].data = dataMundo.datos;
+
+    chart.options.plugins.title.text = 'Distribución global del hambre';
+    boton.innerText = "Ver México";
+  }
+
+  chart.update();
+}
+</script>
+
+</body>
+</html>
